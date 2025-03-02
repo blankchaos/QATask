@@ -1,4 +1,4 @@
-.NET SDK is required to launch tests
+.NET SDK and firefox browser is required to launch tests
 
 All bellow commands should be used from root directory (with .sln in it).
 
