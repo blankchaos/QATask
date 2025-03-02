@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using System;
+using NUnit.Framework;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;

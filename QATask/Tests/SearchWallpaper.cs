@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using QATask.Pages;
 
 namespace QATask.Tests;

@@ -28,3 +28,5 @@ obj/
 #editor config
 .idea
 /QATask/obj
+/QATask/bin
+/.idea
