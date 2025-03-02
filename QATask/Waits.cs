@@ -1,4 +1,3 @@
-using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
@@ -13,18 +12,16 @@ public class Waits(IWebDriver driver)
         Clickable,
         Invisible
     }
-    
-    public void WaitForElement(string locator, int timeoutSeconds = 30, SupportedWaits? method = SupportedWaits.Visible)
+
+    public void WaitForElement(string locator, int timeoutSeconds = GlobalVars.DefaultWaitInSeconds,
+        SupportedWaits? method = SupportedWaits.Visible)
     {
-        DefaultWait<IWebDriver> wait = new(driver)
-        {
-            Timeout = TimeSpan.FromSeconds(timeoutSeconds),
-            PollingInterval = TimeSpan.FromMilliseconds(250)
-        };
-        wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+        var wait = DefaultWait(timeoutSeconds);
+        Console.WriteLine($"Waiting for element {locator} to be {method.ToString()}");
         switch (method)
         {
             case SupportedWaits.Clickable:
+                wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(locator)));
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(locator)));
                 break;
             case SupportedWaits.Visible:
@@ -38,15 +35,11 @@ public class Waits(IWebDriver driver)
                 break;
         }
     }
-    
-    public void WaitForElementToDisappear(string locator, int timeoutSeconds = 30)
+
+    public void WaitForElementToDisappear(string locator, int timeoutSeconds = GlobalVars.DefaultWaitInSeconds)
     {
-        DefaultWait<IWebDriver> wait = new(driver)
-        {
-            Timeout = TimeSpan.FromSeconds(timeoutSeconds),
-            PollingInterval = TimeSpan.FromMilliseconds(250)
-        };
-        wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+        var wait = DefaultWait(timeoutSeconds);
+        Console.WriteLine($"Waiting for element {locator} to disappear");
         wait.Until(drv =>
         {
             try
@@ -61,11 +54,20 @@ public class Waits(IWebDriver driver)
         });
     }
 
-    public void ExplicitWait(string locator, int seconds)
+    public void WaitForAttributeToMatchValue(IWebElement element, string attribute, string value)
     {
-        WebDriverWait wait = new(driver, TimeSpan.FromSeconds(seconds));
-        var selector = driver.FindElement(By.CssSelector(locator)); 
-        wait.Until(d => selector.Displayed);
-        //this is to avoid using Thread.Sleep when there's no other way
+        var wait = DefaultWait(GlobalVars.DefaultWaitInSeconds);
+        wait.Until(d => element.GetAttribute(attribute) == value);
+    }
+
+    private DefaultWait<IWebDriver> DefaultWait(int timeoutSeconds)
+    {
+        DefaultWait<IWebDriver> wait = new(driver)
+        {
+            Timeout = TimeSpan.FromSeconds(timeoutSeconds),
+            PollingInterval = TimeSpan.FromMilliseconds(250)
+        };
+        wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+        return wait;
     }
 }

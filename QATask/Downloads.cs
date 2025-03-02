@@ -1,15 +1,14 @@
-using System;
-using System.IO;
-using System.Threading;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace QATask;
 
-public abstract class Downloads
+public abstract partial class Downloads
 {
     public static void WaitForDownloadToFinish(string fileNameWithoutExtension, int timeoutInSeconds)
     {
         var timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-        var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+        var stopWatch = Stopwatch.StartNew();
         var expectedFilePath = GetExpectedDownloadFilePath(fileNameWithoutExtension);
 
         while (stopWatch.Elapsed < timeout)
@@ -17,51 +16,53 @@ public abstract class Downloads
             if (IsDownloadFinished(expectedFilePath))
             {
                 Console.WriteLine($"Download completed: {expectedFilePath}");
+                return;
             }
-
-            Console.WriteLine($"Waiting for {expectedFilePath} to finish downloading...");
-            Thread.Sleep(1000);
+            else
+            {
+                Console.WriteLine($"Waiting for {expectedFilePath} to finish downloading...");
+                Thread.Sleep(1000);
+            }
         }
 
-        throw new TimeoutException($"Timeout reached. File '{expectedFilePath}' not found.");
+        throw new TimeoutException($"Timeout reached. File '{expectedFilePath}.jpg' not found.");
     }
 
-    
+
     private static bool IsDownloadFinished(string filePath)
     {
-        string[] allowedExtensions = [".jpg", ".jpeg", ".png"];
+        if (!File.Exists(filePath)) return false;
 
-        foreach (var ext in allowedExtensions)
+        try
         {
-            var fullFilePath = filePath + ext;
-            if (!File.Exists(fullFilePath)) continue;
-            try
+            using (File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                using (File.Open(fullFilePath, FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    return true;
-                }
+                return true;
             }
-            catch (IOException)
-            {
-                Console.WriteLine("File is still being downloaded");
-            }
+        }
+        catch (IOException)
+        {
+            Console.WriteLine("File is still being downloaded");
         }
 
         return false;
     }
 
-    
+
     private static string GetExpectedDownloadFilePath(string fileName)
     {
         var downloadPath = GetDefaultDownloadFolder();
-        var sanitizedFileName = fileName.Replace(" ", "_");
+        var sanitizedFileName = MyRegex().Replace(fileName, "_").ToLower() + ".jpg";
 
         return Path.Combine(downloadPath, sanitizedFileName);
     }
-    
+
     private static string GetDefaultDownloadFolder()
     {
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
     }
+
+    [GeneratedRegex(@"[^a-zA-Z0-9]")]
+    private static partial Regex MyRegex();
+
 }

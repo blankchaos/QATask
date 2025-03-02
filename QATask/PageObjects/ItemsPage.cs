@@ -1,21 +1,20 @@
-using System;
-
 namespace QATask.PageObjects;
 
-public class ItemsPage(Actions actions, Waits waits)
+public class ItemsPage(Actions actions, Waits waits) : DriverInitialization
 {
     private const string DownloadButton = "div.flex-grow:nth-child(2) > button:nth-child(2)";
     private const string BadgeIcon = ".\\!pr-12";
     private const string ItemNameHeader = "h1";
     private const string DownloadTimerAdModal = "#radix-\\:r9\\:";
+    private string _fileName = "";
 
     public bool IsWallpaperPremium()
     {
-        var premiumResultCheck = actions.CheckIfExists(BadgeIcon, timeout:5);
+        var premiumResultCheck = actions.CheckIfExists(BadgeIcon, 5);
         Console.WriteLine(premiumResultCheck ? "Wallpaper is premium" : "Wallpaper is free");
         return premiumResultCheck;
     }
-    
+
     public void ClickDownloadButton()
     {
         actions.Click(DownloadButton);
@@ -23,6 +22,7 @@ public class ItemsPage(Actions actions, Waits waits)
 
     public void WaitForAdPopUp()
     {
+        _fileName = actions.GetText(ItemNameHeader);
         waits.WaitForElement(DownloadTimerAdModal);
     }
 
@@ -33,7 +33,6 @@ public class ItemsPage(Actions actions, Waits waits)
 
     public void WaitForDownloadToFinish()
     {
-        var fileName = actions.GetText(ItemNameHeader);
-        Downloads.WaitForDownloadToFinish(fileName, 30);
+        Downloads.WaitForDownloadToFinish(_fileName, 30);
     }
 }

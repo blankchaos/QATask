@@ -1,6 +1,4 @@
-﻿using System;
-using NUnit.Framework;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
@@ -9,11 +7,11 @@ namespace QATask;
 
 public class DriverInitialization
 {
-    protected IWebDriver Driver {get; private set;}
-    protected Waits Waits;
-    protected Actions Actions;
     private readonly string _baseUrl = Environment.GetEnvironmentVariable("url") ?? "https://shorturl.at/PTVHg";
-    
+    protected Actions Actions;
+    protected Waits Waits;
+    protected IWebDriver Driver { get; private set; }
+
     [SetUp]
     public void Setup()
     {
@@ -22,7 +20,7 @@ public class DriverInitialization
         Driver = new FirefoxDriver();
         Waits = new Waits(Driver);
         Actions = new Actions(Driver, Waits);
-        
+
         StartBrowser();
     }
 
