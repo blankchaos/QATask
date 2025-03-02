@@ -1,6 +1,6 @@
 namespace QATask.Pages;
 
-public class ItemsPage
+public static class ItemsPage
 {
-    public const string TagsContainer = "div.flex-wrap:last-child"; //live env = no better selector
+    public const string TagsContainer = "div.flex-wrap:nth-child(5)"; //live env = no better selector
 }

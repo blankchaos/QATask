@@ -2,12 +2,13 @@ using QATask.Pages;
 
 namespace QATask.Tests;
 
+[TestFixture]
 public class SearchWallpaper : DriverInitialization
 {
     /// <summary>
     ///     My preferred way of writing test, due to everything being clearly visible inside test
     /// </summary>
-    [Test]
+    [Test, Category("Web Only Tests")]
     public void SearchWallpaperByKeyword()
     {
         const string keyword = "dog";
@@ -25,18 +26,18 @@ public class SearchWallpaper : DriverInitialization
     /// <summary>
     ///     POM way of writing test
     /// </summary>
-    [Test]
+    [Test, Category("Web Only Tests")]
     public void IdentifyFirstWallpaper()
     {
-        var wallpaperPom = new PageObjects.WallpapersPage(Actions, Waits);
-        var itemPom = new PageObjects.ItemsPage(Actions, Waits);
+        var wallpapersPage = new PageObjects.WallpapersPage(Actions, Waits);
+        var itemsPage = new PageObjects.ItemsPage(Actions, Waits);
 
         OpenWallpaperSearch("/wallpapers");
-        wallpaperPom.OpenFirstWallpaper();
-        itemPom.IsWallpaperPremium();
+        wallpapersPage.OpenFirstWallpaper();
+        itemsPage.IsWallpaperPremium();
     }
 
-    [Test]
+    [Test, Category("Download Tests")]
     public void DownloadFreeWallpaper()
     {
         var wallpapersPage = new PageObjects.WallpapersPage(Actions, Waits);
@@ -53,7 +54,7 @@ public class SearchWallpaper : DriverInitialization
     private void OpenWallpaperSearch(string path)
     {
         Actions.ClickIfFound(LandingPage.CookiesPrimaryButton);
-        Driver.NavigateToSubpage(path);
+        Actions.NavigateToSubpage(Driver, path);
         Waits.WaitForElement(WallpapersPage.Header);
     }
 }

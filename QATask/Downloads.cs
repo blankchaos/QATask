@@ -16,13 +16,12 @@ public abstract partial class Downloads
             if (IsDownloadFinished(expectedFilePath))
             {
                 Console.WriteLine($"Download completed: {expectedFilePath}");
+                Thread.Sleep(1000); //for browser to handle that download finished
                 return;
             }
-            else
-            {
-                Console.WriteLine($"Waiting for {expectedFilePath} to finish downloading...");
-                Thread.Sleep(1000);
-            }
+
+            Console.WriteLine($"Waiting for {expectedFilePath} to finish downloading...");
+            Thread.Sleep(1000);
         }
 
         throw new TimeoutException($"Timeout reached. File '{expectedFilePath}.jpg' not found.");

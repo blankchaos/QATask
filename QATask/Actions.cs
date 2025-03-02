@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 
 namespace QATask;
 
@@ -13,6 +12,8 @@ public class Actions(IWebDriver driver, Waits waits)
         Console.WriteLine($"Click method called from: {callingMethod}");
 
         waits.WaitForElement(locator, timeoutSeconds, supportedWait);
+        Console.WriteLine($"Element found, clicking {locator}");
+        
         driver.FindElement(By.CssSelector(locator)).Click();
     }
 
@@ -25,6 +26,7 @@ public class Actions(IWebDriver driver, Waits waits)
         waits.WaitForElement(locator, timeoutSeconds, supportedWait);
         try
         {
+            Console.WriteLine($"Element found, clicking {locator}");
             driver.FindElement(By.CssSelector(locator)).Click();
         }
         catch (ElementNotVisibleException e)
@@ -82,5 +84,13 @@ public class Actions(IWebDriver driver, Waits waits)
         {
             return false;
         }
+    }
+    
+    public static void NavigateToSubpage(IWebDriver driver, string path)
+    {
+        var url = driver.Url;
+
+        if (path.StartsWith("/")) url += path.TrimStart("/".ToCharArray());
+        driver.Navigate().GoToUrl(url);
     }
 }
