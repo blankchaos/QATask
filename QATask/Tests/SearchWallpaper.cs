@@ -29,7 +29,7 @@ public class SearchWallpaper : DriverInitialization
     [Test, Category("Web Only Tests")]
     public void IdentifyFirstWallpaper()
     {
-        var wallpapersPage = new PageObjects.WallpapersPage(Actions, Waits);
+        var wallpapersPage = new PageObjects.WallpapersPage(Actions);
         var itemsPage = new PageObjects.ItemsPage(Actions, Waits);
 
         OpenWallpaperSearch("/wallpapers");
@@ -40,11 +40,12 @@ public class SearchWallpaper : DriverInitialization
     [Test, Category("Download Tests")]
     public void DownloadFreeWallpaper()
     {
-        var wallpapersPage = new PageObjects.WallpapersPage(Actions, Waits);
+        var wallpapersPage = new PageObjects.WallpapersPage(Actions);
         var itemsPage = new PageObjects.ItemsPage(Actions, Waits);
 
         OpenWallpaperSearch("/wallpapers?free=true");
         wallpapersPage.OpenFirstWallpaper();
+        itemsPage.WaitForRelatedBlock();
         itemsPage.ClickDownloadButton();
         itemsPage.WaitForAdPopUp();
         itemsPage.WaitForDownloadToStart();

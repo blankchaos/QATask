@@ -1,6 +1,6 @@
 namespace QATask.PageObjects;
 
-public class WallpapersPage(Actions actions, Waits waits) : DriverInitialization
+public class WallpapersPage(Actions actions) : DriverInitialization
 {
     private const string FirstFoundItem = ".aspect-wallpaper";
 

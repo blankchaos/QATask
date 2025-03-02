@@ -8,7 +8,7 @@ public class Actions(IWebDriver driver, Waits waits)
     public void Click(string locator, int timeoutSeconds = GlobalVars.DefaultWaitInSeconds,
         Waits.SupportedWaits? supportedWait = Waits.SupportedWaits.Clickable)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"Click method called from: {callingMethod}");
 
         waits.WaitForElement(locator, timeoutSeconds, supportedWait);
@@ -20,7 +20,7 @@ public class Actions(IWebDriver driver, Waits waits)
     public void ClickIfFound(string locator, int timeoutSeconds = GlobalVars.DefaultWaitInSeconds,
         Waits.SupportedWaits? supportedWait = Waits.SupportedWaits.Clickable)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"ClickIfFound method called from: {callingMethod}");
 
         waits.WaitForElement(locator, timeoutSeconds, supportedWait);
@@ -29,7 +29,7 @@ public class Actions(IWebDriver driver, Waits waits)
             Console.WriteLine($"Element found, clicking {locator}");
             driver.FindElement(By.CssSelector(locator)).Click();
         }
-        catch (ElementNotVisibleException e)
+        catch (ElementNotVisibleException)
         {
             Console.WriteLine("Element not found, continuing");
         }
@@ -37,11 +37,12 @@ public class Actions(IWebDriver driver, Waits waits)
 
     public void EnterText(string locator, string text)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"EnterText method called from: {callingMethod}");
 
         waits.WaitForElement(locator);
         var element = driver.FindElement(By.CssSelector(locator));
+        element.Click(); //correctly trigger search bar
         element.Clear();
         element.SendKeys(text);
         waits.WaitForAttributeToMatchValue(element, attribute: "value", value: text);
@@ -49,7 +50,7 @@ public class Actions(IWebDriver driver, Waits waits)
 
     public string GetText(string locator)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"GetText method called from: {callingMethod}");
 
         waits.WaitForElement(locator);
@@ -58,7 +59,7 @@ public class Actions(IWebDriver driver, Waits waits)
 
     public bool IsFoundInContainer(string locator, string tagName, string text)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"IsFoundInContainer method called from: {callingMethod}");
 
         waits.WaitForElement(locator);
@@ -72,7 +73,7 @@ public class Actions(IWebDriver driver, Waits waits)
 
     public bool CheckIfExists(string locator, int timeout)
     {
-        var callingMethod = new StackTrace().GetFrame(1).GetMethod().Name;
+        var callingMethod = new StackTrace().GetFrame(1)?.GetMethod()?.Name;
         Console.WriteLine($"CheckIfExists method called from: {callingMethod}");
 
         try

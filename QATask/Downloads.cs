@@ -17,6 +17,7 @@ public abstract partial class Downloads
             {
                 Console.WriteLine($"Download completed: {expectedFilePath}");
                 Thread.Sleep(1000); //for browser to handle that download finished
+                DownloadedItemCleanup(expectedFilePath);
                 return;
             }
 
@@ -27,6 +28,18 @@ public abstract partial class Downloads
         throw new TimeoutException($"Timeout reached. File '{expectedFilePath}.jpg' not found.");
     }
 
+    private static void DownloadedItemCleanup(string expectedFilePath)
+    {
+        if (File.Exists(expectedFilePath))
+        {
+            File.Delete(expectedFilePath);
+            Console.WriteLine($"File {expectedFilePath} deleted successfully.");
+        }
+        else
+        {
+            Console.WriteLine($"File {expectedFilePath} does not exist.");
+        }
+    }
 
     private static bool IsDownloadFinished(string filePath)
     {

@@ -6,6 +6,7 @@ public class ItemsPage(Actions actions, Waits waits) : DriverInitialization
     private const string BadgeIcon = ".\\!pr-12";
     private const string ItemNameHeader = "h1";
     private const string DownloadTimerAdModal = "#radix-\\:r9\\:";
+    private const string ItemContainer = "div[class*='CardsContainer_cards-container-items']";
     private string _fileName = "";
 
     public bool IsWallpaperPremium()
@@ -13,6 +14,11 @@ public class ItemsPage(Actions actions, Waits waits) : DriverInitialization
         var premiumResultCheck = actions.CheckIfExists(BadgeIcon, 5);
         Console.WriteLine(premiumResultCheck ? "Wallpaper is premium" : "Wallpaper is free");
         return premiumResultCheck;
+    }
+
+    public void WaitForRelatedBlock()
+    {
+        waits.WaitForElement(ItemContainer);
     }
 
     public void ClickDownloadButton()
